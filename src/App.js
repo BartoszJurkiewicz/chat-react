@@ -1,18 +1,72 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import io from 'socket.io-client'
 import './App.css';
+import Message from './components/Message/'
+import MessageForm from './components/MessageForm/'
+import { API } from './const'
+
+let socket
 
 class App extends Component {
+  constructor() {
+    super()
+    this.state = {
+      messages: []
+    }
+    this.getMessages = this.getMessages.bind(this)
+    this.removeMessage = this.removeMessage.bind(this)
+  }
+
+  async getMessages() {
+    try {
+      const res = await API.get('')
+      this.setState({
+        messages: res.data.data
+      })
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
+  socketPost(msg) {
+    socket.emit('message', msg)
+  }
+
+  async removeMessage (id) {
+    console.log('removing msg', id)
+    try {
+      const res = await API.delete(`/${id}`)
+      const localMessages = [...this.state.messages]
+      console.log(localMessages)
+      this.setState({
+        messages: localMessages.filter(msg => msg.id !== id)
+      })
+      socket.emit('removed')
+    } catch(err) {
+      console.log(err)
+    }
+  }
+
+  componentDidMount () {
+    this.getMessages()
+    socket = io.connect('http://localhost:3030/')
+    socket.on('message', msg => {
+      this.getMessages()
+    })
+    socket.on('removed', () => {
+      this.getMessages()
+    })
+  }
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <ul className="messages-list">
+          {this.state.messages.map(message => 
+            <Message message={message} key={message.id} removeMessage={this.removeMessage} />
+          )}
+        </ul>
+        <MessageForm socketPost={this.socketPost} />
       </div>
     );
   }
