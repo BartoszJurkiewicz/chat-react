@@ -1,0 +1,11 @@
+.splash {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.splash .user-form {
+  display: flex;
+  flex-direction: column;
+}

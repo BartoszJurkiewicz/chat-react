@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import './MessageForm.css'
 import moment from 'moment'
 import PropTypes from 'prop-types'
-import { API } from '../../const'
+import { API } from '../../../../const'
 
 class MessageForm extends Component {
   constructor(props) {
@@ -37,7 +37,7 @@ class MessageForm extends Component {
     e.preventDefault()
     try {
       const res = await API.post('', this.state.message)
-      this.props.socketPost(this.state.message)
+      // this.props.socketPost(this.state.message)
       this.clearForm()
     } catch(err) {
       console.log(err)
@@ -55,7 +55,7 @@ class MessageForm extends Component {
 }
 
 MessageForm.propTypes = {
-  socketPost: PropTypes.func.isRequired
+  // socketPost: PropTypes.func.isRequired
 }
 
 export default MessageForm

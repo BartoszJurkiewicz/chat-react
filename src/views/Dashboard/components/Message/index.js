@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './Message.css';
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { API } from '../../const'
+import { API } from '../../../../const'
 
 class Message extends Component {
   constructor(props) {
